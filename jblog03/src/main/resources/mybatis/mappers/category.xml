@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="category">
+	
+	<insert id="insert" parameterType="string">
+		<![CDATA[ insert into category values(null, 'basic','basic', now(), #{_parameter }) ]]>
+	</insert>
+	
+</mapper>

@@ -9,11 +9,58 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-	
+
+	<!-- auto proxy -->
+	<aop:aspectj-autoproxy />
+
+	<aop:config proxy-target-class="true"></aop:config>
+
 	<!-- Optional pathvariable null 처리 설정 기능도 있음 -->
 	<mvc:annotation-driven />
+
+	<!-- 서블릿 컨테이너의 디폴트 서블릿 위임 핸들러 -->
+	<mvc:default-servlet-handler />
+
+	<!-- ViewResolver 설정 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+		<property name="order" value="1" />
+	</bean>
 	
+	<!-- MessageSource : validation 시 defaultmessage아닌 custom message 사용 위해 사용-->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>messages/messages_ko</value> <!-- 한국어 version -->
+			</list>
+		</property>
+	</bean>
+	
+	<!-- interceptors -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/user/auth" />
+			<bean class="com.douzone.jblog.security.LoginInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/user/logout" />
+			<bean class="com.douzone.jblog.security.LogoutInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/user/auth" />
+			<mvc:exclude-mapping path="/user/logout" />
+			<mvc:exclude-mapping path="/assets/**" />
+			<bean class="com.douzone.jblog.security.AuthInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
 	<context:annotation-config />
 	<context:component-scan
-		base-package=" com.douzone.jblog.controller" />
+		base-package=" com.douzone.jblog.controller, com.douzone.jblog.exception" />
 </beans>
