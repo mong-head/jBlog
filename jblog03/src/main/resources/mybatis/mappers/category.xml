@@ -2,8 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="category">
 	
-	<insert id="insert" parameterType="string">
-		<![CDATA[ insert into category values(null, 'basic','basic', now(), #{_parameter }) ]]>
+	<insert id="insert" parameterType="categoryvo">
+		<choose>
+			<when test='name == null'>
+				<![CDATA[ insert into category values(null, 'basic','basic', now(), #{blogId }) ]]>
+			</when>
+			<otherwise>
+				<![CDATA[ insert into category values(null, #{name },#{description }, now(), #{blogId }) ]]>	
+			</otherwise>
+		</choose>
 	</insert>
+	
+	<select id="findAllbyId" parameterType="string" resultType="categoryvo">
+		<![CDATA[ select no,name,c.desc as description , reg_date as regDate , blog_id as blogId from category c where blog_id = #{blogId }]]>
+	</select>
+	
+	<select id="findAllwithCountbyId" parameterType="string" resultType="categoryvo">
+		<![CDATA[ select c.no, c.name, c.desc as description , count(p.category_no) as count
+				from category c
+				left join post p
+				on c.no = p.category_no
+				where c.blog_id = #{_parameter }
+				group by c.no
+				order by 4 desc
+		]]>
+	</select>
+	
+	<delete id="delete" parameterType="categoryvo">
+		<![CDATA[ delete from category where no = #{no }]]>
+	</delete>
 	
 </mapper>

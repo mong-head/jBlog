@@ -4,10 +4,23 @@ public class CategoryVo {
 
 	private Long no;
 	private String name;
-	private String desc;
+	private String description;
 	private String regDate;
-	private Long blogId;
+	private String blogId;
+	private Long count;
 	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public Long getCount() {
+		return count;
+	}
+	public void setCount(Long count) {
+		this.count = count;
+	}
 	public Long getNo() {
 		return no;
 	}
@@ -20,27 +33,21 @@ public class CategoryVo {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getDesc() {
-		return desc;
-	}
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
 	public String getRegDate() {
 		return regDate;
 	}
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
-	public Long getBlogId() {
+	public String getBlogId() {
 		return blogId;
 	}
-	public void setBlogId(Long blogId) {
+	public void setBlogId(String blogId) {
 		this.blogId = blogId;
 	}
 	@Override
 	public String toString() {
-		return "categoryVo [no=" + no + ", name=" + name + ", desc=" + desc + ", regDate=" + regDate + ", blogId="
-				+ blogId + "]";
+		return "CategoryVo [no=" + no + ", name=" + name + ", description=" + description + ", regDate=" + regDate
+				+ ", blogId=" + blogId + ", count=" + count + "]";
 	}
 }

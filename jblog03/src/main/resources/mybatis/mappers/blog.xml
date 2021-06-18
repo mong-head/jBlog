@@ -3,7 +3,23 @@
 <mapper namespace="blog">
 	
 	<insert id="insert" parameterType="string">
-		<![CDATA[ insert into blog values(#{_parameter }, concat(#{_parameter },"'s blog"), '/images/blog/default_profile.jpg') ]]>
+		<![CDATA[ insert into blog values(#{_parameter }, concat(#{_parameter },"'s blog"), '/assets/images/blog/default_profile.jpg') ]]>
 	</insert>
+	
+	<select id="findById" parameterType="string" resultType="blogvo">
+		<![CDATA[ select * from blog where id = #{_parameter }]]>
+	</select>
+	
+	<update id="update" parameterType="blogvo">
+		<choose>
+			<when test='logo == null'>
+				<![CDATA[ update blog set title = #{title } where id = #{id }]]>
+			</when>
+			<otherwise>
+				<![CDATA[ update blog set logo = #{logo }, title = #{title } where id = #{id }]]>
+			</otherwise>
+		</choose>
+	</update>
+
 	
 </mapper>

@@ -49,6 +49,14 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			return false;
 		}
 		
+		// 7. blog admin 확인
+		String id = request.getRequestURL().toString().split("/")[4];
+		
+		if(id.equals(authUser.getId()) == false) {
+			response.sendRedirect(request.getContextPath());
+			return false;
+		}
+		
 		return true;
 		
 	}

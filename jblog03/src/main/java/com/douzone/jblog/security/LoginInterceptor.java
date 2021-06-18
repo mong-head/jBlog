@@ -26,7 +26,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		//login fail
 		if(authUser == null) {
 			request.setAttribute("result", "fail");
-			request.setAttribute("email", id);
+			request.setAttribute("id", id);
 			request.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(request, response);
 			
 			return false; //뒤에서 처리할 것이 없음

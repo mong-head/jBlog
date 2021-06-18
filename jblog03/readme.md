@@ -13,6 +13,11 @@
 	* logBack : for log
 	* validation
 	* jstl
+	* test
+		* junit
+		* spring-test
+	* test-log
+		* spring-rules
 * spring-servlet.xml
 	* scan : controller, exception(log)
 	* viewResolver 설정 (prefix,suffix)
