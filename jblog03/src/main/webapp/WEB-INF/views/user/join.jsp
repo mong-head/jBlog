@@ -5,7 +5,6 @@
 	pageEncoding="utf-8"%>
 	
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
 <!doctype html>
 <html>
 <head>
@@ -13,6 +12,43 @@
 <title>JBlog</title>
 <Link rel="stylesheet"
 	href="${pageContext.request.contextPath}/assets/css/jblog.css">
+<script
+	src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"
+	type="text/javascript"></script>
+<script>
+	$(function() {
+		btn = $('#btn-checkemail');
+		btn.click(function() {
+			id = $('#id').val(); //변수로 만들 때 var사용
+			if (id == "") {
+				return;
+			}
+			$.ajax({
+				url : "${pageContext.request.contextPath }/user/api/checkid?id=" + id,
+				type : "get",
+				dataType : "json",
+				success : function(response) {
+					console.log(response);
+
+					if (response.result != "success") {
+						console.error(response.message);
+						return;
+					}
+
+					if (response.data) {
+						alert("존재하는 아이디입니다. 다른 아이디를 사용하세요.");
+						$("#id").val("");
+						$("#id").focus();
+						return;
+					}
+
+					$('#btn-checkemail').hide();
+					$('#img-checkemail').show();
+				}
+			});
+		});
+	});
+</script>
 </head>
 <body>
 	<div class="center-content">
@@ -27,8 +63,11 @@
 				<form:errors path="name" />
 			</p>
 
-			<label class="block-label" for="blog-id">아이디</label> <input
-				id="blog-id" name="id" type="text" value="${userVo.id }"> <input
+			<label class="block-label" for="blog-id">아이디</label>
+			<!-- input
+				id="blog-id" name="id" type="text" value="${userVo.id }"-->
+			<form:input path="id"/>
+			<input
 				id="btn-checkemail" type="button" value="id 중복체크"> <img
 				id="img-checkemail" style="display: none;"
 				src="${pageContext.request.contextPath}/assets/images/check.png">
