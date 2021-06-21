@@ -5,5 +5,7 @@
 				<ul class="admin-menu">
 					<li <c:if test='${"basic" eq menu }'>class="selected"</c:if>><a href="${pageContext.request.contextPath}/${authUser.id }/admin/basic">기본설정</a></li>
 					<li <c:if test='${"category" eq menu }'>class="selected"</c:if>><a href="${pageContext.request.contextPath}/${authUser.id }/admin/category">카테고리</a></li>
-					<li <c:if test='${"write" eq menu }'>class="selected"</c:if>><a href="${pageContext.request.contextPath}/${authUser.id }/admin/write">글작성</a></li>
+					<c:if test='${not empty categoryList }'>
+						<li <c:if test='${"write" eq menu }'>class="selected"</c:if>><a href="${pageContext.request.contextPath}/${authUser.id }/admin/write">글작성</a></li>
+					</c:if>
 				</ul>

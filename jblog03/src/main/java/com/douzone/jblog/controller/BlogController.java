@@ -26,64 +26,63 @@ import com.douzone.jblog.vo.PostVo;
 @Controller
 @RequestMapping("/{id:(?!assets).*}")
 public class BlogController {
-	
+
 	@Autowired
 	private ServletContext application;
-	
+
 	@Autowired
 	private BlogService blogService;
-	
+
 	@Autowired
 	private FileUploadService fileUploadService;
 
-	@RequestMapping({"","/{pathNo1}","/{pathNo1}/{pathNo2}"})
-	public String index(
-			@PathVariable("id") String id,
-			@PathVariable("pathNo1") Optional<Long> pathNo1,
-			@PathVariable("pathNo2") Optional<Long> pathNo2,
-			Model model) {
+	@RequestMapping({ "", "/{pathNo1}", "/{pathNo1}/{pathNo2}" })
+	public String index(@PathVariable("id") String id, @PathVariable("pathNo1") Optional<Long> pathNo1,
+			@PathVariable("pathNo2") Optional<Long> pathNo2, Model model) {
 		Long categoryNo = 0L;
 		Long postNo = 0L;
 
-		if(pathNo2.isPresent()) {
+		if (pathNo2.isPresent()) {
 			categoryNo = pathNo1.get();
 			postNo = pathNo2.get();
-		} else if(pathNo1.isPresent()) {
+		} else if (pathNo1.isPresent()) {
 			categoryNo = pathNo1.get();
 		}
-		
-		Map<String, Object> result = blogService.getBlogContents(id,categoryNo,postNo);
+
+		Map<String, Object> result = blogService.getBlogContents(id, categoryNo, postNo);
 		application.setAttribute("authBlogVo", result.get("blogVo"));
-		model.addAttribute("blogVo",result.get("blogVo"));
-		model.addAttribute("categoryList",result.get("categoryList"));
-		model.addAttribute("postVo",result.get("postVo"));
-		model.addAttribute("postList",result.get("postList"));
-		
+		model.addAttribute("blogVo", result.get("blogVo"));
+		model.addAttribute("categoryList", result.get("categoryList"));
+		model.addAttribute("postVo", result.get("postVo"));
+		model.addAttribute("postList", result.get("postList"));
+
 		return "blog/main";
 	}
-	
+
 	// admin page
-	
+
 	@Auth
 	@RequestMapping("/admin/basic")
 	public String adminBasic(@ModelAttribute @PathVariable("id") String id, Model model) {
+		// category list
+		List<CategoryVo> categoryList = blogService.getCategoryListwithCount(id);
+		model.addAttribute("categoryList", categoryList);
+		
 		model.addAttribute("menu", "basic");
 		return "blog/admin/basic";
 	}
-	
+
 	@Auth
-	@RequestMapping(value="/admin/basic", method=RequestMethod.POST)
-	public String adminBasicUpdate(
-			@PathVariable("id") String id, @ModelAttribute BlogVo blogVo,
-			@RequestParam("logo_file") MultipartFile file,
-			Model model) {
+	@RequestMapping(value = "/admin/basic", method = RequestMethod.POST)
+	public String adminBasicUpdate(@PathVariable("id") String id, @ModelAttribute BlogVo blogVo,
+			@RequestParam("logo_file") MultipartFile file, Model model) {
 		String url = fileUploadService.restore(file);
 		blogVo.setId(id);
 		blogVo.setLogo(url);
 		blogService.update(blogVo);
-		
+
 		// 고치고 싶은 부분
-		if(url == null) {
+		if (url == null) {
 			url = ((BlogVo) application.getAttribute("authBlogVo")).getLogo();
 			blogVo.setLogo(url);
 		}
@@ -91,7 +90,7 @@ public class BlogController {
 
 		return "redirect:/{id}/admin/basic";
 	}
-	
+
 	@Auth
 	@RequestMapping("/admin/category")
 	public String adminCategory(@PathVariable("id") String id, Model model) {
@@ -99,56 +98,54 @@ public class BlogController {
 		List<CategoryVo> categoryList = blogService.getCategoryListwithCount(id);
 		model.addAttribute("categoryList", categoryList);
 		model.addAttribute("listLength", categoryList.size());
-		
+
 		model.addAttribute("menu", "category");
 		return "blog/admin/category";
 	}
-	
+
 	@Auth
 	@RequestMapping("/admin/category/delete")
-	public String adminCategoryDelete(
-			@PathVariable("id") String id,
-			@RequestParam(value="no", required=true, defaultValue="") Long categoryNo) {
-		
+	public String adminCategoryDelete(@PathVariable("id") String id,
+			@RequestParam(value = "no", required = true, defaultValue = "") Long categoryNo) {
+
 		CategoryVo categoryVo = new CategoryVo();
 		categoryVo.setBlogId(id);
 		categoryVo.setNo(categoryNo);
-		
+
 		blogService.deleteCategory(categoryVo);
 		return "redirect:/{id}/admin/category";
 	}
-	
+
 	@Auth
 	@RequestMapping("/admin/category/add")
-	public String adminCategoryAdd(@PathVariable("id") String id,CategoryVo categoryVo) {
-		if(categoryVo.getName() == "") {
+	public String adminCategoryAdd(@PathVariable("id") String id, CategoryVo categoryVo) {
+		if (categoryVo.getName() == "") {
 			return "redirect:/{id}/admin/category";
 		}
 		categoryVo.setBlogId(id);
 		blogService.addCategory(categoryVo);
 		return "redirect:/{id}/admin/category";
 	}
-	
+
 	@Auth
 	@RequestMapping("/admin/write")
 	public String adminWrite(@PathVariable("id") String id, Model model) {
-		
+
 		List<CategoryVo> categoryList = blogService.getCategoryList(id);
-		
+
 		model.addAttribute("categoryList", categoryList);
 		model.addAttribute("menu", "write");
 		return "blog/admin/write";
 	}
-	
+
 	@Auth
-	@RequestMapping(value="/admin/write", method=RequestMethod.POST)
-	public String adminWrite(@PathVariable("id") String id, PostVo postVo, 
-			@RequestParam(value="category", required=true, defaultValue="") Long categoryNo,
-			Model model) {
-		
+	@RequestMapping(value = "/admin/write", method = RequestMethod.POST)
+	public String adminWrite(@PathVariable("id") String id, PostVo postVo,
+			@RequestParam(value = "category", required = true, defaultValue = "") Long categoryNo, Model model) {
+
 		postVo.setCategoryNo(categoryNo);
 		Long postNo = blogService.writePost(postVo);
-		
-		return "redirect:/{id}/"+categoryNo+"/"+postNo;
+
+		return "redirect:/{id}/" + categoryNo + "/" + postNo;
 	}
 }
