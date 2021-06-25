@@ -1,5 +1,7 @@
 package com.douzone.jblog.security;
 
+import java.net.URLDecoder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -51,7 +53,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		
 		// 7. blog admin 확인
 		String id = request.getRequestURL().toString().split("/")[4];
-		
+		id = URLDecoder.decode(id,"utf-8");		
 		if(id.equals(authUser.getId()) == false) {
 			response.sendRedirect(request.getContextPath());
 			return false;
