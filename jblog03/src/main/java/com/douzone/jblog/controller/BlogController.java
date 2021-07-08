@@ -24,7 +24,7 @@ import com.douzone.jblog.vo.CategoryVo;
 import com.douzone.jblog.vo.PostVo;
 
 @Controller
-@RequestMapping("/{id:(?!assets).*}")
+@RequestMapping("/{id:(?!assets|ejs).*}")
 public class BlogController {
 
 	@Autowired
@@ -95,9 +95,9 @@ public class BlogController {
 	@RequestMapping("/admin/category")
 	public String adminCategory(@PathVariable("id") String id, Model model) {
 		// category list
-		List<CategoryVo> categoryList = blogService.getCategoryListwithCount(id);
-		model.addAttribute("categoryList", categoryList);
-		model.addAttribute("listLength", categoryList.size());
+//		List<CategoryVo> categoryList = blogService.getCategoryListwithCount(id);
+//		model.addAttribute("categoryList", categoryList);
+//		model.addAttribute("listLength", categoryList.size());
 
 		model.addAttribute("menu", "category");
 		return "blog/admin/category";
